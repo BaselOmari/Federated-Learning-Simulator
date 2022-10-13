@@ -27,8 +27,7 @@ def establishConnection(clientNum, serverAddr):
 
 def main(args):
     serverAddress = formatAddress(args.address)
-
-    print(serverAddress)
+    sock = establishConnection(args.id, serverAddress)
 
 
 def parse_args():

@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
-class ClientStateMachine:
 
+class ClientStateMachine:
     class States(Enum):
         InitWait = auto()
         DataGenWait = auto()
@@ -10,7 +10,7 @@ class ClientStateMachine:
 
     def __init__(self):
         self.state = self.States.InitWait
-    
+
     def onEvent(self, event):
         if self.state == self.States.InitWait:
             if event == "connected":
@@ -24,7 +24,9 @@ class ClientStateMachine:
         elif self.state == self.States.ModelTraining:
             if event == "returned model":
                 self.state = self.States.DataGenWait
-    
+
     def getState(self):
         return self.state
-  
+
+
+csm = ClientStateMachine()
