@@ -1,9 +1,8 @@
 import argparse
 import socket
 
+import clientDataset
 from clientFSM import csm
-from clientReceiver import startReceiver
-from clientDataGenerator import run
 
 from threading import Thread
 
@@ -26,13 +25,23 @@ def establishConnection(clientNum, serverAddr):
 
 
 def main(args):
-    serverAddress = formatAddress(args.address)
-    sock = establishConnection(args.id, serverAddress)
+    sock = establishConnection(args.id, formatAddress(args.address))
+
+    roundSplitDataset = clientDataset.get_user_data(
+        args.usercount, args.id, args.rounds, args.seed
+    )
+    vocab = clientDataset.get_vocab()
+
+    for currRound in range(args.rounds):
+        pass
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--id", type=int, required=True)
+    parser.add_argument("--usercount", type=int, required=True)
+    parser.add_argument("--rounds", type=int, default=5)
+    parser.add_argument("--seed", type=int, default=2022)
     parser.add_argument("--address", type=str, required=True)
     return parser.parse_args()
 

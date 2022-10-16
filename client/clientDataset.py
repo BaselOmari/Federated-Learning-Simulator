@@ -1,25 +1,47 @@
 import collections
+import random
 import torch
 
 
-def get_user_data(text, user_count, user_idx):
-    split_paragraphs = text.split("\n\n")
-    num_paragraphs_per_user = len(split_paragraphs) / user_count
+def get_user_data(userCount, userID, rounds, seed):
+    random.seed(seed)
 
-    low = int(user_idx * num_paragraphs_per_user)
-    high = int((user_idx + 1) * num_paragraphs_per_user)
+    text = ""
+    with open("data/tiny-shakespeare.txt", "r") as f:
+        text = f.read()
 
-    return "\n\n".join(split_paragraphs[low:high])
+    splitParagraphs = text.split("\n\n")
+    print(len(splitParagraphs))
+    random.shuffle(splitParagraphs)
+    numParagraphsPerUser = len(splitParagraphs) / userCount
+    numParagraphsPerRound = numParagraphsPerUser / rounds
+
+    start = int(userID * numParagraphsPerUser)
+
+    round_split_data = []
+    for i in range(rounds):
+        low = int(start + (numParagraphsPerRound * i))
+        high = int(start + (numParagraphsPerRound * (i + 1)))
+        print(low, high)
+        round_split_data.append("\n\n".join(splitParagraphs[low:high]))
+
+    return round_split_data
 
 
-def vocab(text):
+def get_vocab():
+    text = ""
+    with open("data/tiny-shakespeare.txt", "r") as f:
+        text = f.read()
+
     freq = collections.Counter(text).most_common()
 
     vocab = dict()
-    reverse_vocab = dict()
+    reverseVocab = dict()
     for c, i in enumerate(freq):
         vocab[c] = i[0]
-        reverse_vocab[i[0]] = c
+        reverseVocab[i[0]] = c
+
+    return vocab, reverseVocab
 
     return vocab, reverse_vocab
 
