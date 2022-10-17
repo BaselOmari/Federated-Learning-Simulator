@@ -33,26 +33,8 @@ def get_vocab():
     with open("data/tiny-shakespeare.txt", "r") as f:
         text = f.read()
 
-    freq = collections.Counter(text).most_common()
-
-    vocab = dict()
-    reverseVocab = dict()
-    for c, i in enumerate(freq):
-        vocab[c] = i[0]
-        reverseVocab[i[0]] = c
+    chars = tuple(set(text))
+    vocab = dict(enumerate(chars))
+    reverseVocab = {c: i for i, c in vocab.items()}
 
     return vocab, reverseVocab
-
-    return vocab, reverse_vocab
-
-
-text = ""
-with open("data/tiny-shakespeare.txt", "r") as f:
-    text = f.read()
-
-vocab, reverse_vocab = vocab(text)
-
-USER_COUNT = 25
-USER_I = 0
-
-rawDataset = get_user_data(text, USER_COUNT, USER_I)
