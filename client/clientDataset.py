@@ -1,13 +1,18 @@
-import collections
+import os
 import random
 
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, Dataset, random_split
+
+
+def get_abs_path(relativePath):
+    scriptDirectory = os.path.dirname(__file__)
+    return os.path.join(scriptDirectory, relativePath)
 
 
 class TextDataset(Dataset):
-    def __init__(self, text, vocab, batchSize):
+    def __init__(self, text, vocab, chunkLength):
         self.tokenizedDataset = [vocab[c] for c in text]
-        self.batchSize = batchSize
+        self.chunkLength = chunkLength
 
     def __getitem__(self, index):
         low = index * self.batchSize
@@ -30,7 +35,7 @@ def get_user_data(userCount, userID, rounds, seed):
     random.seed(seed)
 
     text = ""
-    with open("data/tiny-shakespeare.txt", "r") as f:
+    with open(get_abs_path("data/tiny-shakespeare.txt"), "r") as f:
         text = f.read()
 
     splitParagraphs = text.split("\n\n")
@@ -51,7 +56,7 @@ def get_user_data(userCount, userID, rounds, seed):
 
 def get_vocab():
     text = ""
-    with open("data/tiny-shakespeare.txt", "r") as f:
+    with open(get_abs_path("data/tiny-shakespeare.txt"), "r") as f:
         text = f.read()
 
     chars = tuple(set(text))

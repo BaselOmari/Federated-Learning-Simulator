@@ -1,8 +1,1 @@
 torch
-
-# pre-commit
-black
-flake8
-pre-commit
-pre-commit-hooks
-pyupgrade
