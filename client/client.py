@@ -1,10 +1,10 @@
 import argparse
 import socket
+from threading import Thread
+from clientDataset import TextDataset
 
 import clientDataset
 from clientFSM import csm
-
-from threading import Thread
 
 
 def formatAddress(addressStr):
@@ -30,10 +30,11 @@ def main(args):
     roundSplitDataset = clientDataset.get_user_data(
         args.usercount, args.id, args.rounds, args.seed
     )
-    vocab = clientDataset.get_vocab()
+    _, reverseVocab = clientDataset.get_vocab()
 
     for currRound in range(args.rounds):
-        pass
+        currRoundText = roundSplitDataset[currRound]
+        currRoundDataset = TextDataset(currRoundText, reverseVocab, 50)
 
 
 def parse_args():

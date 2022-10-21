@@ -3,20 +3,17 @@ import random
 
 from torch.utils.data import DataLoader, Dataset, random_split
 
-
-def get_abs_path(relativePath):
-    scriptDirectory = os.path.dirname(__file__)
-    return os.path.join(scriptDirectory, relativePath)
+DATASET = "tiny-shakespeare.txt"
 
 
 class TextDataset(Dataset):
-    def __init__(self, text, vocab, chunkLength):
-        self.tokenizedDataset = [vocab[c] for c in text]
+    def __init__(self, text, reverseVocab, chunkLength):
+        self.tokenizedDataset = [reverseVocab[c] for c in text]
         self.chunkLength = chunkLength
 
     def __getitem__(self, index):
-        low = index * self.batchSize
-        high = (index + 1) * self.batchSize
+        low = index * self.chunkLength
+        high = (index + 1) * self.chunkLength
         x = self.tokenizedDataset[low:high]
         y = None
         try:
@@ -28,14 +25,19 @@ class TextDataset(Dataset):
 
     # Number of batches
     def __len__(self):
-        return len(self.tokenizedDataset) // self.batchSize
+        return len(self.tokenizedDataset) // self.chunkLength
+
+
+def get_abs_path(relativePath):
+    scriptDirectory = os.path.dirname(__file__)
+    return os.path.join(scriptDirectory, relativePath)
 
 
 def get_user_data(userCount, userID, rounds, seed):
     random.seed(seed)
 
     text = ""
-    with open(get_abs_path("data/tiny-shakespeare.txt"), "r") as f:
+    with open(get_abs_path(f"data/{DATASET}"), "r") as f:
         text = f.read()
 
     splitParagraphs = text.split("\n\n")
@@ -56,7 +58,7 @@ def get_user_data(userCount, userID, rounds, seed):
 
 def get_vocab():
     text = ""
-    with open(get_abs_path("data/tiny-shakespeare.txt"), "r") as f:
+    with open(get_abs_path(f"data/{DATASET}"), "r") as f:
         text = f.read()
 
     chars = tuple(set(text))
