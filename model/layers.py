@@ -14,14 +14,8 @@ class CharRNN(nn.Module):
         self.rnn = nn.LSTM(hiddenSize, hiddenSize, nLayers)
         self.decoder = nn.Linear(hiddenSize, outputSize)
 
-    def forward(self, input, hidden):
+    def forward(self, input, hidden=None):
         encoded = self.encoder(input)
         output, hidden = self.rnn(encoded, hidden)
         output = self.decoder(output)
         return output, hidden
-
-    def init_hidden(self):
-        return (
-            torch.zeros(self.nLayers, self.hiddenSize),
-            torch.zeros(self.nLayers, self.hiddenSize),
-        )

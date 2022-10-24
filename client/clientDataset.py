@@ -1,7 +1,11 @@
 import os
 import random
 
+import torch
 from torch.utils.data import DataLoader, Dataset, random_split
+
+from math import ceil, floor
+
 
 DATASET = "tiny-shakespeare.txt"
 
@@ -21,7 +25,7 @@ class TextDataset(Dataset):
         except IndexError:
             y = x
             x = self.tokenizedDataset[low - 1 : high - 1]
-        return x, y
+        return torch.tensor([x, y])
 
     # Number of batches
     def __len__(self):
@@ -54,6 +58,13 @@ def get_user_data(userCount, userID, rounds, seed):
         round_split_data.append("\n\n".join(splitParagraphs[low:high]))
 
     return round_split_data
+
+
+def split_data(dataset, split):
+    return random_split(
+        dataset,
+        [ceil(len(dataset) * split), floor(len(dataset) * split)],
+    )
 
 
 def get_vocab():
