@@ -1,10 +1,11 @@
+from math import ceil, floor
+
 import torch
 import torch.nn as nn
-from torch import optim
 import torch.nn.functional as F
-from torch.utils.data import random_split
+from torch import optim
 from torch.distributions import Categorical
-from math import ceil, floor
+from torch.utils.data import random_split
 
 
 def train(model, dataset, reverseVocab, vocab):
@@ -78,6 +79,7 @@ sys.path.append(r"/Users/alomarb/non-adsk/FL Research/FL-Sim")
 
 
 from layers import CharRNN
+
 from client import clientDataset
 
 rounds = 4

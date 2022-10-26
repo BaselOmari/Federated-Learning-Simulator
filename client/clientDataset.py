@@ -1,11 +1,9 @@
 import os
 import random
+from math import ceil, floor
 
 import torch
 from torch.utils.data import DataLoader, Dataset, random_split
-
-from math import ceil, floor
-
 
 DATASET = "tiny-shakespeare.txt"
 

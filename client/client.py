@@ -1,9 +1,9 @@
 import argparse
 import socket
 from threading import Thread
-from clientDataset import TextDataset
 
 import clientDataset
+from clientDataset import TextDataset
 from clientFSM import csm
 
 
