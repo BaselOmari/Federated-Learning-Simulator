@@ -4,6 +4,7 @@ import socket
 import sys
 
 import clientDataset
+from clientDataset import TextDataset
 from clientFSM import csm
 
 DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
