@@ -1,77 +1,38 @@
 import os
-import random
-from math import ceil, floor
 
-import torch
-from torch.utils.data import DataLoader, Dataset, random_split
-
-DATASET = "tiny-shakespeare.txt"
+import torchvision
+from torch.utils.data import DataLoader, Dataset, Subset
+from torchvision import datasets
 
 
-class TextDataset(Dataset):
-    def __init__(self, text, reverseVocab, chunkLength):
-        self.tokenizedDataset = [reverseVocab[c] for c in text]
-        self.chunkLength = chunkLength
-
-    def __getitem__(self, index):
-        low = index * self.chunkLength
-        high = (index + 1) * self.chunkLength
-        x = self.tokenizedDataset[low:high]
-        y = None
-        try:
-            y = self.tokenizedDataset[low + 1 : high + 1]
-        except IndexError:
-            y = x
-            x = self.tokenizedDataset[low - 1 : high - 1]
-        return torch.tensor([x, y])
-
-    # Number of batches
-    def __len__(self):
-        return len(self.tokenizedDataset) // self.chunkLength
-
-
-def get_abs_path(relativePath):
-    scriptDirectory = os.path.dirname(__file__)
-    return os.path.join(scriptDirectory, relativePath)
-
-
-def get_user_data(userCount, userID, rounds, seed):
-    random.seed(seed)
-
-    text = ""
-    with open(get_abs_path(f"data/{DATASET}"), "r") as f:
-        text = f.read()
-
-    splitParagraphs = text.split("\n\n")
-    random.shuffle(splitParagraphs)
-    numParagraphsPerUser = len(splitParagraphs) / userCount
-    numParagraphsPerRound = numParagraphsPerUser / rounds
-
-    start = int(userID * numParagraphsPerUser)
-
-    round_split_data = []
-    for i in range(rounds):
-        low = int(start + (numParagraphsPerRound * i))
-        high = int(start + (numParagraphsPerRound * (i + 1)))
-        round_split_data.append("\n\n".join(splitParagraphs[low:high]))
-
-    return round_split_data
-
-
-def split_data(dataset, split):
-    return random_split(
-        dataset,
-        [ceil(len(dataset) * split), floor(len(dataset) * split)],
+def load_full_dataset() -> Dataset:
+    mnistDataset = datasets.MNIST(
+        os.path.dirname(os.path.realpath(__file__)) + "/data",
+        train=True,
+        download=True,
+        transform=torchvision.transforms.Compose(
+            [
+                torchvision.transforms.ToTensor(),
+                torchvision.transforms.Normalize((0.1307,), (0.3081,)),
+            ]
+        ),
     )
+    return mnistDataset
 
 
-def get_vocab():
-    text = ""
-    with open(get_abs_path(f"data/{DATASET}"), "r") as f:
-        text = f.read()
+def create_data_subset(count, index, fullDataset=load_full_dataset()) -> Subset:
+    countPerSet = len(fullDataset) // count
+    low = countPerSet * index
+    high = low + countPerSet
+    subsetIndices = [i for i in range(low, high)]
+    return Subset(fullDataset, subsetIndices)
 
-    chars = tuple(set(text))
-    vocab = dict(enumerate(chars))
-    reverseVocab = {c: i for i, c in vocab.items()}
 
-    return vocab, reverseVocab
+def get_round_dataloader(roundNumber, roundCount, batchSize, userDataset) -> DataLoader:
+    subset = create_data_subset(roundCount, roundNumber, userDataset)
+    dataloader = DataLoader(
+        subset,
+        batch_size=batchSize,
+        shuffle=True,
+    )
+    return dataloader
