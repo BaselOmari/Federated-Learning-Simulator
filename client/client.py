@@ -1,10 +1,10 @@
 import argparse
 import socket
-from threading import Thread
-from clientDataset import TextDataset
 
 import clientDataset
 from clientFSM import csm
+
+from model import layers, train
 
 
 def formatAddress(addressStr):
@@ -27,14 +27,12 @@ def establishConnection(clientNum, serverAddr):
 def main(args):
     sock = establishConnection(args.id, formatAddress(args.address))
 
-    roundSplitDataset = clientDataset.get_user_data(
-        args.usercount, args.id, args.rounds, args.seed
-    )
-    _, reverseVocab = clientDataset.get_vocab()
+    fullUserData = clientDataset.create_data_subset(args.usercount, args.id)
 
     for currRound in range(args.rounds):
-        currRoundText = roundSplitDataset[currRound]
-        currRoundDataset = TextDataset(currRoundText, reverseVocab, 50)
+        currRoundDataloader = clientDataset.get_round_dataloader(
+            currRound, args.rounds, 64, fullUserData
+        )
 
 
 def parse_args():
