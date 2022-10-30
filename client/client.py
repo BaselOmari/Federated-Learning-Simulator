@@ -1,10 +1,16 @@
 import argparse
+import os
 import socket
+import sys
 
 import clientDataset
 from clientFSM import csm
 
-from model import layers, train
+DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
+sys.path.append(DIR)
+
+import model.layers as layers
+import model.train as train
 
 
 def formatAddress(addressStr):
