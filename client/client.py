@@ -6,7 +6,6 @@ from random import randint
 from time import sleep
 
 import clientDataset
-from clientFSM import csm
 
 DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
 sys.path.append(DIR)
@@ -23,7 +22,6 @@ def establishConnection(clientNum, serverPort):
     serverAddr = (socket.gethostbyname("localhost"), serverPort)
     clientSocket.connect(serverAddr)
 
-    csm.onEvent("connected")
     print(f"Client {clientNum} connected!")
 
     return clientSocket
