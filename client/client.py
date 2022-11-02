@@ -1,17 +1,9 @@
 import argparse
-import os
 import socket
-import sys
 from random import randint
 from time import sleep
 
 import clientDataset
-
-DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
-sys.path.append(DIR)
-
-import model.layers as layers
-import model.train as train
 
 
 def establishConnection(clientNum, serverPort):

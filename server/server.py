@@ -1,8 +1,22 @@
 import argparse
+import os
 import select
 import socket
+import sys
+
+DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
+sys.path.append(DIR)
+
+import model.layers as layers
+import model.train as train
+
 
 socket.setdefaulttimeout(15)
+
+
+def sendAllConnections(connectionList: list[socket.socket], msg):
+    for connection in connectionList:
+        connection.send(msg.encode())
 
 
 def getConnections(serverPort):
@@ -11,9 +25,7 @@ def getConnections(serverPort):
     serverSocket.bind(serverAddr)
     serverSocket.listen()
 
-    clientPoller = select.poll()
-    initialPoller = select.poll()
-    initialPoller.register(serverSocket, select.POLLIN)
+    connectionList = []
 
     while True:
         try:
@@ -23,15 +35,27 @@ def getConnections(serverPort):
             break
         else:
             print(f"Client {address} connected")
-            clientPoller.register(connection, select.POLLIN)
+            connectionList.append(connection)
 
     serverSocket.close()
 
-    return clientPoller
+    return connectionList
 
 
 def main(args):
-    connectionPoller = getConnections(args.port)
+    connectionList = getConnections(args.port)
+
+    cleanModel = layers.CNN()
+    trainingInstructions = train.train
+
+    # For number of rounds specified by the args:
+    # 1. Send model to the client
+    # 2. Client trains using their data
+    # 3. Retrieve updated model from clients
+    # 4. Aggregate
+    # 5. Test against testing set and print results
+
+    # 1. Send model to the client
 
 
 def parse_args():
