@@ -1,9 +1,17 @@
 import argparse
+import dill as pickle
 import socket
 from random import randint
 from time import sleep
 
 import clientDataset
+
+MAX_RECV_LEN = 25 * 1024 * 1024  # 25 Mbytes
+
+
+def waitOnSignal(socket, msg):
+    while (socket.recv(MAX_RECV_LEN)).decode() != msg:
+        pass
 
 
 def establishConnection(clientNum, serverPort):
@@ -21,6 +29,8 @@ def establishConnection(clientNum, serverPort):
 
 def main(args):
     clientSocket = establishConnection(args.id, args.port)
+
+    waitOnSignal(clientSocket, "connection established")
 
     fullUserData = clientDataset.create_data_subset(args.usercount, args.id)
 

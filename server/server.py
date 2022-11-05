@@ -1,6 +1,6 @@
 import argparse
+import dill as pickle
 import os
-import select
 import socket
 import sys
 
@@ -12,11 +12,6 @@ import model.train as train
 
 
 socket.setdefaulttimeout(15)
-
-
-def sendAllConnections(connectionList: list[socket.socket], msg):
-    for connection in connectionList:
-        connection.send(msg.encode())
 
 
 def getConnections(serverPort):
@@ -42,10 +37,18 @@ def getConnections(serverPort):
     return connectionList
 
 
+def sendAllConnections(connectionList: list[socket.socket], msg):
+    if type(msg) == str:
+        msg = msg.encode()
+    for connection in connectionList:
+        connection.send(msg)
+
+
 def main(args):
     connectionList = getConnections(args.port)
+    sendAllConnections(connectionList, "connection established")
 
-    cleanModel = layers.CNN()
+    model = layers.CNN()
     trainingInstructions = train.train
 
     # For number of rounds specified by the args:
