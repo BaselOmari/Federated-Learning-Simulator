@@ -44,7 +44,7 @@ def train(model, dataset):
     return model
 
 def test(model, testSet):
-    criterion = nn.MSELoss()
+    criterion = nn.NLLLoss()
     loss = 0
     for input, target in tqdm(testSet):
         output = model(input)
