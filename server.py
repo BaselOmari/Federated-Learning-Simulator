@@ -1,15 +1,15 @@
 import argparse
-import dill as pickle
 import os
 import socket
 import sys
+
+import dill as pickle
 
 DIR = os.path.dirname(os.path.realpath(__file__)) + "/.."
 sys.path.append(DIR)
 
 import model.layers as layers
 import model.train as train
-
 
 socket.setdefaulttimeout(15)
 

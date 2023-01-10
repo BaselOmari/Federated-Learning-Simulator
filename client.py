@@ -1,10 +1,11 @@
 import argparse
-import dill as pickle
 import socket
 from random import randint
 from time import sleep
 
-import clientDataset
+import dill as pickle
+
+import dataset.mnist_dataset as mnist_dataset
 
 MAX_RECV_LEN = 25 * 1024 * 1024  # 25 Mbytes
 
@@ -32,12 +33,12 @@ def main(args):
 
     waitOnSignal(clientSocket, "connection established")
 
-    fullUserData = clientDataset.create_data_subset(args.usercount, args.id)
+    fullUserData = mnist_dataset.create_data_subset(args.usercount, args.id)
 
     for currRound in range(args.rounds):
         sleep(randint(2, 8))
         print(f"Client {args.id} generated sufficient data")
-        currRoundDataLoader = clientDataset.get_round_dataloader(
+        currRoundDataLoader = mnist_dataset.get_round_dataloader(
             currRound, args.rounds, 64, fullUserData
         )
 
