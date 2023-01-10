@@ -27,7 +27,7 @@ def train(model, dataset):
             output = model(input)
 
             # No need to shape target to one-hot encoding
-            loss = criterion(output, target)
+            loss = criterion(output, torch.tensor([target]))
             loss.backward()
             optimizer.step()
 
