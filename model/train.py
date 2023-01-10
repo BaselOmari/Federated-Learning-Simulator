@@ -12,7 +12,7 @@ def train(model, dataset):
 
     ##### TRAINING HYPERPARAMETERS #####
     epochs = 3
-    learningRate = 0.001
+    learningRate = 0.01
     momentum = 0.5
     optimizer = optim.SGD(model.parameters(), lr=learningRate, momentum=momentum)
     criterion = nn.NLLLoss()
