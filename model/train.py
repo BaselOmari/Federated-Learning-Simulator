@@ -1,8 +1,6 @@
 import torch.nn as nn
 from torch import optim
 
-from math import ceil, floor
-
 from torch.utils.data import random_split
 
 
@@ -52,6 +50,9 @@ def test(model, test_set):
 
 def train_test_split(dset, trainPercentage):
     assert trainPercentage > 0 and trainPercentage < 1
+    
+    trainCount = int(len(dset)*trainPercentage)
+    testCount = len(dset) - trainCount
     train, test = random_split(
-        dset, [ceil(len(dset)*trainPercentage), floor(len(dset)*(1-trainPercentage))])
+        dset, [trainCount, testCount])
     return train, test
