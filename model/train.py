@@ -43,19 +43,10 @@ def train(model, dataset):
 
     return model
 
-def test(model, test_set):
+def test(model, testSet):
     criterion = nn.MSELoss()
     loss = 0
-    for input, target in test_set:
+    for input, target in tqdm(testSet):
         output = model(input)
-        loss += criterion(output, target).item()
-    return loss / len(test_set)
-
-def train_test_split(dset, trainPercentage):
-    assert trainPercentage > 0 and trainPercentage < 1
-    
-    trainCount = int(len(dset)*trainPercentage)
-    testCount = len(dset) - trainCount
-    train, test = random_split(
-        dset, [trainCount, testCount])
-    return train, test
+        loss += criterion(output, torch.tensor([target])).item()
+    return loss / len(testSet)
