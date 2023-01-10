@@ -39,8 +39,7 @@ def train(model, dataset):
 
         epochLoss /= len(dataset)
 
-        if epoch % 2 == 0:
-            print(f"EPOCH {epoch} LOSS: {epochLoss}")
+        print(f"EPOCH {epoch} LOSS: {epochLoss}")
 
     return model
 
