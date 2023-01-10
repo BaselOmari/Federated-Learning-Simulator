@@ -1,5 +1,5 @@
 __pycache__
 test_*
-client/data/*
+dataset/data
 .vscode
 flpy
