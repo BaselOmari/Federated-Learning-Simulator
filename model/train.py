@@ -37,3 +37,11 @@ def train(model, dataset):
             print(f"EPOCH {epoch} LOSS: {epochLoss}")
 
     return model
+
+def test(model, test_set):
+    criterion = nn.MSELoss()
+    loss = 0
+    for input, target in test_set:
+        output = model(input)
+        loss += criterion(output, target).item()
+    return loss / len(test_set)
