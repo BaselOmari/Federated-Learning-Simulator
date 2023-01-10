@@ -1,13 +1,17 @@
+import torch
 import torch.nn as nn
+
 from torch import optim
 
 from torch.utils.data import random_split
+
+from tqdm import tqdm
 
 
 def train(model, dataset):
 
     ##### TRAINING HYPERPARAMETERS #####
-    epochs = 100
+    epochs = 3
     learningRate = 0.001
     momentum = 0.5
     optimizer = optim.SGD(model.parameters(), lr=learningRate, momentum=momentum)
@@ -17,7 +21,7 @@ def train(model, dataset):
     for epoch in range(epochs):
 
         epochLoss = 0
-        for input, target in dataset:
+        for input, target in tqdm(dataset):
 
             # Reset such that only data that pertains
             # to the current input is used
