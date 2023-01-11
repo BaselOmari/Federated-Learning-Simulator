@@ -20,6 +20,13 @@ def load_dataset(isTrainDataset=True) -> Dataset:
     return mnistDataset
 
 
+def get_dataloader(dataset, batchSize=64):
+    dataloader = DataLoader(
+        dataset=dataset, batch_size=batchSize, shuffle=True, drop_last=True
+    )
+    return dataloader
+
+
 def create_data_subset(count, index, fullDataset=load_dataset) -> Subset:
     countPerSet = len(fullDataset) // count
     low = countPerSet * index

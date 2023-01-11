@@ -3,8 +3,6 @@ import torch.nn as nn
 
 from torch import optim
 
-from torch.utils.data import random_split
-
 from tqdm import tqdm
 
 
@@ -18,6 +16,7 @@ def train(model, dataset):
     criterion = nn.NLLLoss()
     ####################################
 
+    print("Training:")
     for epoch in range(epochs):
 
         epochLoss = 0
@@ -44,6 +43,7 @@ def train(model, dataset):
     return model
 
 def test(model, testSet):
+    print("Testing:")
     model.eval()
     correct, total = 0,0
     with torch.no_grad():

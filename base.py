@@ -7,12 +7,15 @@ def base():
     model = CNN()
 
     trainSet = mnist_dataset.load_dataset(isTrainDataset=True)
+    trainLoader = mnist_dataset.get_dataloader(trainSet)
+
     testSet = mnist_dataset.load_dataset(isTrainDataset=False)
+    testLoader = mnist_dataset.get_dataloader(testSet)
 
-    updatedModel = train(model, trainSet)
-    testLoss = test(updatedModel, testSet)
+    model = train(model, trainLoader)
+    testLoss = test(model, testLoader)
 
-    print("Test accuracy: ", testLoss)
+    print("Test accuracy: %.2f%%" % (testLoss*100))
 
 if __name__ == "__main__":
     base()
