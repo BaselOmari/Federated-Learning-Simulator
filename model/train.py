@@ -1,24 +1,29 @@
+import torch
 import torch.nn as nn
+
 from torch import optim
+
+from tqdm import tqdm
 
 
 def train(model, dataset):
 
     ##### TRAINING HYPERPARAMETERS #####
-    epochs = 100
-    learningRate = 0.001
+    epochs = 3
+    learningRate = 0.01
     momentum = 0.5
     optimizer = optim.SGD(model.parameters(), lr=learningRate, momentum=momentum)
     criterion = nn.NLLLoss()
     ####################################
 
+    print("Training:")
     for epoch in range(epochs):
 
         epochLoss = 0
-        for input, target in dataset:
+        for input, target in tqdm(dataset):
 
-            # Reset such that only data that pertains
-            # to the current input is used
+            # Reset such that only gradients that pertain
+            # to the current input are used
             optimizer.zero_grad()
 
             # Forward
@@ -33,7 +38,18 @@ def train(model, dataset):
 
         epochLoss /= len(dataset)
 
-        if epoch % 2 == 0:
-            print(f"EPOCH {epoch} LOSS: {epochLoss}")
+        print(f"EPOCH {epoch} LOSS: {epochLoss}")
 
     return model
+
+
+def test(model, testSet):
+    print("Testing:")
+    model.eval()
+    correct, total = 0, 0
+    with torch.no_grad():
+        for input, target in testSet:
+            output = model(input)
+            correct += (output.argmax(1) == target).sum().item()
+            total += target.size(0)
+    return correct / total

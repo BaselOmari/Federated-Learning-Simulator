@@ -5,10 +5,10 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import datasets
 
 
-def load_full_dataset() -> Dataset:
+def load_dataset(isTrainDataset=True) -> Dataset:
     mnistDataset = datasets.MNIST(
         os.path.dirname(os.path.realpath(__file__)) + "/data",
-        train=True,
+        train=isTrainDataset,
         download=True,
         transform=torchvision.transforms.Compose(
             [
@@ -20,7 +20,14 @@ def load_full_dataset() -> Dataset:
     return mnistDataset
 
 
-def create_data_subset(count, index, fullDataset=load_full_dataset()) -> Subset:
+def get_dataloader(dataset, batchSize=64):
+    dataloader = DataLoader(
+        dataset=dataset, batch_size=batchSize, shuffle=True, drop_last=True
+    )
+    return dataloader
+
+
+def create_data_subset(count, index, fullDataset=load_dataset) -> Subset:
     countPerSet = len(fullDataset) // count
     low = countPerSet * index
     high = low + countPerSet
