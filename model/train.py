@@ -23,8 +23,8 @@ def train(model, dataset):
         epochLoss = 0
         for input, target in tqdm(dataset):
 
-            # Reset such that only data that pertains
-            # to the current input is used
+            # Reset such that only gradients that pertain
+            # to the current input are used
             optimizer.zero_grad()
 
             # Forward
@@ -48,6 +48,8 @@ def test(model, testSet):
     correct = 0
     with torch.no_grad():
         for input, target in testSet:
+            target = torch.tensor([target])
             output = model(input)
-            correct += (output.argmax(1) == target).type(torch.float).sum().item()
+            if output.argmax(1) == target:
+                correct += 1
     return correct / len(testSet)
