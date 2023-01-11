@@ -1,11 +1,12 @@
-import torch
-
 from copy import deepcopy
 
-from dataset import mnist_dataset
+import torch
 
+from dataset import mnist_dataset
 from model.layers import CNN
-from model.train import train, test
+from model.train import test, train
+
+clientModels = []
 
 
 def fedAvg(clientModels):
@@ -25,6 +26,7 @@ class federatedConfig:
 
 
 def federated():
+    global clientModels
     config = federatedConfig()
 
     trainSet = mnist_dataset.load_dataset(isTrainDataset=True)
@@ -39,7 +41,6 @@ def federated():
 
     for round in range(config.trainingRounds):
         print(f"Round {round} started")
-        clientModels = []
         for client in range(config.clientNum):
 
             clientTrainingSet = clientDatasets[client][round]
