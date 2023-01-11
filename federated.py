@@ -7,6 +7,7 @@ from dataset import mnist_dataset
 from model.layers import CNN
 from model.train import train, test
 
+
 def fedAvg(clientModels):
     averagedModel = deepcopy(clientModels[0])
     with torch.no_grad():
@@ -19,7 +20,7 @@ def fedAvg(clientModels):
 
 
 class federatedConfig:
-    clientNum = 4
+    clientNum = 3
     trainingRounds = 2
 
 
@@ -27,7 +28,9 @@ def federated():
     config = federatedConfig()
 
     trainSet = mnist_dataset.load_dataset(isTrainDataset=True)
-    trainLoader = mnist_dataset.get_dataloader(trainSet)
+    clientDatasets = mnist_dataset.split_client_datasets(
+        trainSet, config.clientNum, config.trainingRounds
+    )
 
     testSet = mnist_dataset.load_dataset(isTrainDataset=False)
     testLoader = mnist_dataset.get_dataloader(testSet)
@@ -38,11 +41,17 @@ def federated():
         print(f"Round {round} started")
         clientModels = []
         for client in range(config.clientNum):
+
+            clientTrainingSet = clientDatasets[client][round]
+            trainLoader = mnist_dataset.get_dataloader(clientTrainingSet)
+
             clientModel = deepcopy(serverModel)
-            train(clientModel, trainLoader)
-            clientModels.append(clientModel)
+            trainedClientModel = train(clientModel, trainLoader)
+            clientModels.append(trainedClientModel)
             print(f"Client {client} done")
+
         serverModel = fedAvg(clientModels)
+
         testAcc = test(serverModel, testLoader)
         print(f"Round {round} done\tAccuracy = {testAcc}\n\n")
 
