@@ -42,10 +42,11 @@ def train(model, dataset):
 
     return model
 
+
 def test(model, testSet):
     print("Testing:")
     model.eval()
-    correct, total = 0,0
+    correct, total = 0, 0
     with torch.no_grad():
         for input, target in testSet:
             output = model(input)

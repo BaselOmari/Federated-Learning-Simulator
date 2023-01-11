@@ -15,7 +15,8 @@ def base():
     model = train(model, trainLoader)
     testLoss = test(model, testLoader)
 
-    print("Test accuracy: %.2f%%" % (testLoss*100))
+    print("Test accuracy: %.2f%%" % (testLoss * 100))
+
 
 if __name__ == "__main__":
     base()
