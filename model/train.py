@@ -44,9 +44,10 @@ def train(model, dataset):
     return model
 
 def test(model, testSet):
-    criterion = nn.NLLLoss()
-    loss = 0
-    for input, target in tqdm(testSet):
-        output = model(input)
-        loss += criterion(output, torch.tensor([target])).item()
-    return loss / len(testSet)
+    model.eval()
+    correct = 0
+    with torch.no_grad():
+        for input, target in testSet:
+            output = model(input)
+            correct += (output.argmax(1) == target).type(torch.float).sum().item()
+    return correct / len(testSet)
