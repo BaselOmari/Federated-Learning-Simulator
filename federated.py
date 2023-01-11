@@ -1,4 +1,5 @@
 from copy import deepcopy
+from threading import Thread, Lock
 
 import torch
 
@@ -7,6 +8,21 @@ from model.layers import CNN
 from model.train import test, train
 
 clientModels = []
+clientModelsLock = Lock()
+
+
+def clientTraining(serverModel, clientDatasets, client, round):
+    global clientModels
+    clientTrainingSet = clientDatasets[client][round]
+    trainLoader = mnist_dataset.get_dataloader(clientTrainingSet)
+    clientModel = deepcopy(serverModel)
+    trainedClientModel = train(clientModel, trainLoader)
+
+    clientModelsLock.acquire()
+    clientModels.append(trainedClientModel)
+    clientModelsLock.release()
+
+    print(f"Client {client+1} done")
 
 
 def fedAvg(clientModels):
@@ -40,21 +56,24 @@ def federated():
     serverModel = CNN()
 
     for round in range(config.trainingRounds):
-        print(f"Round {round} started")
+        print(f"Round {round+1} started")
+
+        clientModels.clear()
+        clientThreads = []
         for client in range(config.clientNum):
+            t = Thread(
+                target=clientTraining, args=(serverModel, clientDatasets, client, round)
+            )
+            t.start()
+            clientThreads.append(t)
 
-            clientTrainingSet = clientDatasets[client][round]
-            trainLoader = mnist_dataset.get_dataloader(clientTrainingSet)
-
-            clientModel = deepcopy(serverModel)
-            trainedClientModel = train(clientModel, trainLoader)
-            clientModels.append(trainedClientModel)
-            print(f"Client {client} done")
+        for t in clientThreads:
+            t.join()
 
         serverModel = fedAvg(clientModels)
 
         testAcc = test(serverModel, testLoader)
-        print(f"Round {round} done\tAccuracy = {testAcc}\n\n")
+        print(f"Round {round+1} done\tAccuracy = {testAcc}")
 
 
 if __name__ == "__main__":
