@@ -31,7 +31,7 @@ def train(model, dataset):
             output = model(input)
 
             # No need to shape target to one-hot encoding
-            loss = criterion(output, torch.tensor([target]))
+            loss = criterion(output, target)
             loss.backward()
             optimizer.step()
 
@@ -45,11 +45,10 @@ def train(model, dataset):
 
 def test(model, testSet):
     model.eval()
-    correct = 0
+    correct, total = 0,0
     with torch.no_grad():
         for input, target in testSet:
-            target = torch.tensor([target])
             output = model(input)
-            if output.argmax(1) == target:
-                correct += 1
-    return correct / len(testSet)
+            correct += (output.argmax(1) == target).sum().item()
+            total += target.size(0)
+    return correct / total
