@@ -1,5 +1,8 @@
 # Federated Learning Simulator
-Federated Learning attempts to flip the paradigm of machine learning. When training a machine learning model based on client data, instead of having the data be sent from the clients to the server, the model is sent from the server to the clients. The clients train the model using their local data before sending the updated model back to the server. The server aggregates all models received from all clients to produce a fully trained model.
+
+Federated Learning flips the paradigm of machine learning. 
+
+When training a machine learning model based on client data, instead of having the data be sent from the clients to the server, the model is sent from the server to the clients. The clients train the model using their local data before sending the updated model back to the server. The server aggregates all models received from all clients to produce a fully trained model.
 
 This concept was introduced in the paper "Communication-Efficient Learning of Deep Networks from Decentralized Data" by Brendan McMahan et al. and I was able to simulate the algorithms presented using PyTorch and Python.
 
